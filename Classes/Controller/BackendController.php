@@ -44,12 +44,11 @@ class BackendController extends ActionController
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface|null $response
      * @return ResponseInterface
      *
      * @noinspection PhpUnused
      */
-    public function userLookupAction(ServerRequestInterface $request, ResponseInterface $response = null): ResponseInterface
+    public function userLookupAction(ServerRequestInterface $request): ResponseInterface
     {
         $view = $this->backendViewFactory->create($request, ['josefglatz/beuser-fastswitch']);
 
