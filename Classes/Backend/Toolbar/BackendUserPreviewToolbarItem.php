@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace JosefGlatz\BeuserFastswitch\Backend\Toolbar;
 
@@ -72,7 +74,7 @@ class BackendUserPreviewToolbarItem implements ToolbarItemInterface, RequestAwar
      */
     public function getDropDown(): string
     {
-        $view = $this->backendViewFactory->create($this->request,  ['josefglatz/beuser-fastswitch']);
+        $view = $this->backendViewFactory->create($this->request, ['josefglatz/beuser-fastswitch']);
         $view->assignMultiple([
             'users' => $this->getBackendUserRows(),
         ]);

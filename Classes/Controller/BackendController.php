@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JosefGlatz\BeuserFastswitch\Controller;
 
 use JosefGlatz\BeuserFastswitch\Domain\Repository\BackendUserRepository;
@@ -18,23 +20,6 @@ class BackendController extends ActionController
         private readonly BackendUserRepository $backendUserRepository,
         private readonly BackendViewFactory $backendViewFactory,
     ) {
-    }
-
-    /**
-     * @param string $search
-     * @return QueryResultInterface
-     */
-    protected function findUserBySearchWord(string $search): QueryResultInterface
-    {
-        return $this->backendUserRepository->findByMultipleProperties($search);
-    }
-
-    /**
-     * @return QueryResultInterface
-     */
-    protected function findUsers(): QueryResultInterface
-    {
-        return $this->backendUserRepository->findNonAdmins();
     }
 
     /**
@@ -61,5 +46,22 @@ class BackendController extends ActionController
         );
 
         return new HtmlResponse($view->render('UserLookup.html'));
+    }
+
+    /**
+     * @param string $search
+     * @return QueryResultInterface
+     */
+    protected function findUserBySearchWord(string $search): QueryResultInterface
+    {
+        return $this->backendUserRepository->findByMultipleProperties($search);
+    }
+
+    /**
+     * @return QueryResultInterface
+     */
+    protected function findUsers(): QueryResultInterface
+    {
+        return $this->backendUserRepository->findNonAdmins();
     }
 }

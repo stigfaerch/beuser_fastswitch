@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace JosefGlatz\BeuserFastswitch\ViewHelpers;
 
 use TYPO3\CMS\Beuser\Domain\Model\BackendUser;
@@ -17,7 +20,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class SwitchUserViewHelper extends AbstractViewHelper
 {
-
     /**
      * As this ViewHelper renders HTML, the output must not be escaped.
      *
@@ -37,7 +39,7 @@ class SwitchUserViewHelper extends AbstractViewHelper
     public function initializeArguments(): void
     {
         $this->registerArgument('backendUser', BackendUser::class, 'Target backendUser to switch active session to', true);
-        $this->registerArgument('class', 'string', 'Css class(es) for <a\/> tag', false);
+        $this->registerArgument('class', 'string', 'Css class(es) for <a\\/> tag', false);
     }
 
     /**

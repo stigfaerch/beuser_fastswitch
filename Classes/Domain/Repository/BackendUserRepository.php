@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JosefGlatz\BeuserFastswitch\Domain\Repository;
 
 use TYPO3\CMS\Beuser\Domain\Model\BackendUser;
@@ -27,9 +29,9 @@ class BackendUserRepository extends \TYPO3\CMS\Beuser\Domain\Repository\BackendU
                 $queryBuilder->equals('admin', 0),
                 $queryBuilder->equals('deleted', 0),
                 $queryBuilder->logicalOr(
-                    $queryBuilder->like('username', "%$search%"),
-                    $queryBuilder->like('realName', "%$search%"),
-                    $queryBuilder->like('email', "%$search%"),
+                    $queryBuilder->like('username', "%{$search}%"),
+                    $queryBuilder->like('realName', "%{$search}%"),
+                    $queryBuilder->like('email', "%{$search}%"),
                     $queryBuilder->equals('uid', (int)$search)
                 )
             )
@@ -54,6 +56,7 @@ class BackendUserRepository extends \TYPO3\CMS\Beuser\Domain\Repository\BackendU
 
         $constraints[] = $queryBuilder->equals('admin', 0);
         $constraints[] = $queryBuilder->equals('deleted', 0);
+
         if (!empty($uids)) {
             $constraints[] = $queryBuilder->in('uid', $uids);
         }

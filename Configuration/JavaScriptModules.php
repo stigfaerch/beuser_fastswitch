@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'dependencies' => [
         'core',
-        'backend'
+        'backend',
     ],
     'imports' => [
-        '@josefglatz/beuser-fastswitch/' => 'EXT:beuser_fastswitch/Resources/Public/JavaScript/'
-    ]
+        '@josefglatz/beuser-fastswitch/' => 'EXT:beuser_fastswitch/Resources/Public/JavaScript/',
+    ],
 ];
