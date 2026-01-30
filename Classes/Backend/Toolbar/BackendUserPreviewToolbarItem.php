@@ -21,36 +21,15 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 #[AutoconfigureTag('backend.toolbar.item')]
 class BackendUserPreviewToolbarItem implements ToolbarItemInterface, RequestAwareToolbarItemInterface
 {
-    /**
-     * @var BackendUserRepository
-     */
-    private $backendUserRepository;
-
-    /**
-     * @var QueryResultInterface|null
-     */
-    protected $availableUsers = null;
     private ServerRequestInterface $request;
 
     /**
      * Constructor
      */
     public function __construct(
-        BackendUserRepository $backendUserRepository,
+        private readonly BackendUserRepository $backendUserRepository,
         private readonly BackendViewFactory $backendViewFactory,
-        ) {
-            $this->backendUserRepository = $backendUserRepository;
-            $this->loadAvailableBeUsers();
-    }
-
-    /**
-     * Loads all eligible backend users
-     */
-    public function loadAvailableBeUsers(): void
-    {
-        if ($this->checkAccess()) {
-            $this->availableUsers = $this->getBackendUserRows();
-        }
+    ) {
     }
 
     public function setRequest(ServerRequestInterface $request): void
@@ -95,7 +74,7 @@ class BackendUserPreviewToolbarItem implements ToolbarItemInterface, RequestAwar
     {
         $view = $this->backendViewFactory->create($this->request,  ['josefglatz/beuser-fastswitch']);
         $view->assignMultiple([
-            'users' => $this->availableUsers,
+            'users' => $this->getBackendUserRows(),
         ]);
 
         return $view->render('DropDown.html');
@@ -109,7 +88,7 @@ class BackendUserPreviewToolbarItem implements ToolbarItemInterface, RequestAwar
     public function getAdditionalAttributes(): array
     {
         return [
-            'class' => 'tx-beuser-fastswitch'
+            'class' => 'tx-beuser-fastswitch',
         ];
     }
 
@@ -153,7 +132,7 @@ class BackendUserPreviewToolbarItem implements ToolbarItemInterface, RequestAwar
     {
         $rows = $this->backendUserRepository->findNonAdmins();
 
-        if ($rows instanceof QueryResultInterface) {
+        if ($rows->count() > 0) {
             return $rows;
         }
 

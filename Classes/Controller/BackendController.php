@@ -14,17 +14,10 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 #[Autoconfigure(public: true)]
 class BackendController extends ActionController
 {
-    /*
-     * @var BackendUserRepository
-     */
-    private $backendUserRepository;
-
     public function __construct(
-        BackendUserRepository $backendUserRepository,
+        private readonly BackendUserRepository $backendUserRepository,
         private readonly BackendViewFactory $backendViewFactory,
-    )
-    {
-        $this->backendUserRepository = $backendUserRepository;
+    ) {
     }
 
     /**
@@ -53,9 +46,9 @@ class BackendController extends ActionController
     public function userLookupAction(ServerRequestInterface $request): ResponseInterface
     {
         $view = $this->backendViewFactory->create($request, ['josefglatz/beuser-fastswitch']);
-
         $params = $request->getQueryParams();
-        if (isset($params['search']) && !empty($params['search'])) {
+
+        if (!empty($params['search'])) {
             $userList = $this->findUserBySearchWord($params['search']);
         } else {
             $userList = $this->findUsers();
