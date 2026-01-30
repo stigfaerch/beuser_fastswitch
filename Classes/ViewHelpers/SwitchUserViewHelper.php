@@ -1,17 +1,16 @@
 <?php
 namespace JosefGlatz\BeuserFastswitch\ViewHelpers;
 
-use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Beuser\Domain\Model\BackendUser;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconSize;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
+use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Displays 'SwitchUser' link with sprite icon to change current backend user to target backendUser
@@ -22,7 +21,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class SwitchUserViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
 
     /**
      * As this ViewHelper renders HTML, the output must not be escaped.
@@ -31,10 +29,16 @@ class SwitchUserViewHelper extends AbstractViewHelper
      */
     protected $escapeOutput = false;
 
+    public function __construct(
+        protected readonly IconFactory $iconFactory,
+        protected readonly LanguageServiceFactory $languageServiceFactory,
+    ) {
+    }
+
     /**
      * Initializes the arguments
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('backendUser', BackendUser::class, 'Target backendUser to switch active session to', true);
         $this->registerArgument('class', 'string', 'Css class(es) for <a\/> tag', false);
@@ -43,35 +47,38 @@ class SwitchUserViewHelper extends AbstractViewHelper
     /**
      * Render link with sprite icon to change current backend user to target
      *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     *
      * @return string
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public function render(): string
     {
-        $targetUser = $arguments['backendUser'];
-        $currentUser = self::getBackendUserAuthentication();
-        $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        $targetUser = $this->arguments['backendUser'];
+        $currentUser = $this->getBackendUserAuthentication();
 
         if ((int)$targetUser->getUid() === (int)($currentUser->user[$currentUser->userid_column] ?? 0)
             || !$targetUser->isActive()
             || !$currentUser->isAdmin()
             || $currentUser->getOriginalUserIdWhenInSwitchUserMode() !== null
         ) {
-            return '<span class="' . $arguments['class'] . ' disabled">' . $iconFactory->getIcon('empty-empty', IconSize::SMALL)->render() . '</span>';
+            return '<span class="' . $this->arguments['class'] . ' disabled">' .
+                $this->iconFactory->getIcon('empty-empty', IconSize::SMALL)->render() .
+                '</span>';
         }
 
+        $targetUserId = (int)$targetUser->getUid();
+        $class = htmlspecialchars((string)$this->arguments['class']);
+        $icon = $this->iconFactory->getIcon('switch-off', IconSize::SMALL)->render();
+        $ll = $this->languageServiceFactory->createFromUserPreferences($currentUser);
+        $title = htmlspecialchars($ll->sL('LLL:EXT:beuser_fastswitch/Resources/Private/Language/locallang.xlf:toolbar.beuser.fastswitch.dropdown.user.btn.switch'));
+
         return '
-            <typo3-backend-switch-user targetUser="' . htmlspecialchars((string)$targetUser->getUid()) . '">
-                <button type="button" class="' . $arguments['class'] . '" title="' . htmlspecialchars(LocalizationUtility::translate('toolbar.beuser.fastswitch.dropdown.user.btn.switch', 'beuser_fastswitch') ?? '') . '">'
-            . $iconFactory->getIcon('actions-system-backend-user-switch', IconSize::SMALL)->render() .
+            <typo3-backend-switch-user targetUser="' . $targetUserId . '">
+                <button type="button" class="' . $class . '" title="' . $title . '">'
+            . $icon .
             '</button>
             </typo3-switch-user-button>';
     }
 
-    protected static function getBackendUserAuthentication(): BackendUserAuthentication
+    protected function getBackendUserAuthentication(): BackendUserAuthentication
     {
         return $GLOBALS['BE_USER'];
     }
