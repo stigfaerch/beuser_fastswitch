@@ -5,11 +5,13 @@ namespace JosefGlatz\BeuserFastswitch\Controller;
 use JosefGlatz\BeuserFastswitch\Domain\Repository\BackendUserRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Backend\View\BackendViewFactory;
 use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
+#[Autoconfigure(public: true)]
 class BackendController extends ActionController
 {
     /*

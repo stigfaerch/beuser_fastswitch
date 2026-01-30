@@ -4,6 +4,8 @@ namespace JosefGlatz\BeuserFastswitch\Backend\Toolbar;
 
 use JosefGlatz\BeuserFastswitch\Domain\Repository\BackendUserRepository;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use TYPO3\CMS\Backend\Toolbar\RequestAwareToolbarItemInterface;
 use TYPO3\CMS\Backend\Toolbar\ToolbarItemInterface;
 use TYPO3\CMS\Backend\View\BackendViewFactory;
@@ -15,6 +17,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 /**
  * Main functionality to render a list of backend users to which it is possible to switch as an admin
  */
+#[Autoconfigure(public: true)]
+#[AutoconfigureTag('backend.toolbar.item')]
 class BackendUserPreviewToolbarItem implements ToolbarItemInterface, RequestAwareToolbarItemInterface
 {
     /**
