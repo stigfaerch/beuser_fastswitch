@@ -20,7 +20,7 @@
 	],
 	"license": "GPL-3.0-or-later",
 	"require": {
-		"typo3/cms-core": "^13.4 || dev-main",
+		"typo3/cms-core": "^13.4 || ^14.1",
 		"php": "^8.2 || ^8.3"
 	},
 	"autoload": {
