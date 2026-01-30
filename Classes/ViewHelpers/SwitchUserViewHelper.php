@@ -6,11 +6,7 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconSize;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
-use TYPO3\CMS\Core\Localization\LocalizationFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Displays 'SwitchUser' link with sprite icon to change current backend user to target backendUser
@@ -59,14 +55,12 @@ class SwitchUserViewHelper extends AbstractViewHelper
             || !$currentUser->isAdmin()
             || $currentUser->getOriginalUserIdWhenInSwitchUserMode() !== null
         ) {
-            return '<span class="' . $this->arguments['class'] . ' disabled">' .
-                $this->iconFactory->getIcon('empty-empty', IconSize::SMALL)->render() .
-                '</span>';
+            return '';
         }
 
         $targetUserId = (int)$targetUser->getUid();
         $class = htmlspecialchars((string)$this->arguments['class']);
-        $icon = $this->iconFactory->getIcon('switch-off', IconSize::SMALL)->render();
+        $icon = $this->iconFactory->getIcon('actions-user-switch', IconSize::SMALL)->render();
         $ll = $this->languageServiceFactory->createFromUserPreferences($currentUser);
         $title = htmlspecialchars($ll->sL('LLL:EXT:beuser_fastswitch/Resources/Private/Language/locallang.xlf:toolbar.beuser.fastswitch.dropdown.user.btn.switch'));
 
