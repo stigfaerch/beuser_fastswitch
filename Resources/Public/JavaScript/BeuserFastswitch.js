@@ -4,6 +4,16 @@ import DebounceEvent from '@typo3/core/event/debounce-event.js';
 import AjaxRequest from '@typo3/core/ajax/ajax-request.js';
 
 DocumentService.ready().then(function () {
+  new RegularEvent('shown.bs.dropdown', function (e) {
+    if (e.target.closest('.tx-beuser-fastswitch') !== null) {
+      const searchMask = document.querySelector('#beuser-fastswitch-search-mask');
+      if (searchMask !== null) {
+        searchMask.focus();
+        searchMask.select();
+      }
+    }
+  }).bindTo(document);
+
   new RegularEvent('submit', function (e) {
     e.preventDefault();
   }).bindTo(document.querySelector('#beuser-fastswitch-search-form'));
